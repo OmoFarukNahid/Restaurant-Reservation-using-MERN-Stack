@@ -1,7 +1,10 @@
-import app from "./app.js";
+import cors from "cors";
 
-app.listen(process.env.PORT, () => {
-  console.log(`Server is running on port ${process.env.PORT}`);
-  console.log(`http://localhost:${process.env.PORT}`);
-
-});
+app.use(cors({
+  origin: [
+    process.env.FRONTEND_URL || "http://localhost:5173",
+    "https://onlinerestaurantreservation.netlify.app"
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true,
+}));
