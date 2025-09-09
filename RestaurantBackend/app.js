@@ -16,6 +16,8 @@ process.on('uncaughtException', (err) => {
 dotenv.config({ path: './.env' });
 const app = express();
 
+// tell express we're behind a proxy (important for secure cookies)
+app.set('trust proxy', 1);
 // Middleware
 app.use(session({
   name: 'sessionId',
@@ -23,7 +25,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: process.env.NODE_ENV === 'production', // true on Render
+    secure: process.env.NODE_ENV === 'production', // true on Render (HTTPS)
     httpOnly: true,
     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     maxAge: 24 * 60 * 60 * 1000
@@ -31,7 +33,7 @@ app.use(session({
 }));
 
 app.use(cors({
-  origin: [process.env.FRONTEND_URL, "http://localhost:5173", "https://restaurant-reservation-using-mern-stack-5d6x.onrender.com"], 
+  origin: [process.env.FRONTEND_URL, "http://localhost:5173"], 
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']

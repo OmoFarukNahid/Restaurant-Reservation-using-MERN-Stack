@@ -23,6 +23,7 @@ export const checkAuth = async (req, res) => {
     res.json({ user: null });
   }
 };
+
 export const register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -97,12 +98,20 @@ export const login = async (req, res) => {
 export const logout = (req, res) => {
   try {
     req.session.destroy(err => {
-      if (err) throw err;
-      res.clearCookie('connect.sid'); // Clear the session cookie
-      res.json({ 
-        success: true,
-        message: "Logged out successfully" 
+      if (err) {
+        console.error('Session destroy error:', err);
+        return res.status(500).json({ message: "Logout failed" });
+      }
+
+      // Clear cookie (must match session name in app.js)
+      res.clearCookie('sessionId', {
+        path: '/',
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
       });
+
+      return res.status(200).json({ success: true, message: "Logged out successfully" });
     });
   } catch (error) {
     console.error('Logout error:', error);

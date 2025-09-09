@@ -5,6 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../authState';
 import Navbar from './Navbar';
 
+// axios instance (inside this file — no new file required)
+const api = axios.create({
+  baseURL: "https://restaurant-reservation-using-mern-stack-5d6x.onrender.com/api/v1",
+  withCredentials: true, // <- ensures cookies are sent
+});
+
 const Recommendations = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -23,19 +29,23 @@ const Recommendations = () => {
 
   const fetchRecommendations = async () => {
     try {
-      const { data } = await axios.get(
-        'https://restaurant-reservation-using-mern-stack-5d6x.onrender.com/api/v1/recommendations',
-        { withCredentials: true }
-      );
-      setRecommendations(data.recommendations);
+      const { data } = await api.get('/recommendations');
+      setRecommendations(data.recommendations || []);
     } catch (error) {
+      // If 401, prompt login
+      if (error.response?.status === 401) {
+        toast.error('Please login to view recommendations');
+        navigate('/login');
+        return;
+      }
       toast.error('Failed to fetch recommendations');
+      console.error("fetchRecommendations error:", error);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!user) {
       toast.error('Please login to make a recommendation');
       navigate('/login');
@@ -48,24 +58,16 @@ const Recommendations = () => {
     }
 
     setIsLoading(true);
-    
+
     try {
       if (editingId) {
-        await axios.put(
-          `https://restaurant-reservation-using-mern-stack-5d6x.onrender.com/api/v1/recommendations/${editingId}`,
-          { title, description, image },
-          { withCredentials: true }
-        );
+        await api.put(`/recommendations/${editingId}`, { title, description, image });
         toast.success('Recommendation updated successfully');
       } else {
-        await axios.post(
-          'https://restaurant-reservation-using-mern-stack-5d6x.onrender.com/api/v1/recommendations',
-          { title, description, image },
-          { withCredentials: true }
-        );
+        await api.post('/recommendations', { title, description, image });
         toast.success('Recommendation added successfully');
       }
-      
+
       setTitle('');
       setDescription('');
       setImage('');
@@ -73,6 +75,7 @@ const Recommendations = () => {
       fetchRecommendations();
     } catch (error) {
       toast.error(error.response?.data?.message || 'Operation failed');
+      console.error("handleSubmit error:", error);
     } finally {
       setIsLoading(false);
     }
@@ -81,21 +84,19 @@ const Recommendations = () => {
   const handleEdit = (recommendation) => {
     setTitle(recommendation.title);
     setDescription(recommendation.description);
-    setImage(recommendation.image);
+    setImage(recommendation.image || '');
     setEditingId(recommendation._id);
   };
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this recommendation?')) {
       try {
-        await axios.delete(
-          `https://restaurant-reservation-using-mern-stack-5d6x.onrender.com/api/v1/recommendations/${id}`,
-          { withCredentials: true }
-        );
+        await api.delete(`/recommendations/${id}`);
         toast.success('Recommendation deleted successfully');
         fetchRecommendations();
       } catch (error) {
         toast.error('Failed to delete recommendation');
+        console.error("handleDelete error:", error);
       }
     }
   };
