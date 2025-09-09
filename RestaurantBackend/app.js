@@ -23,7 +23,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: process.env.NODE_ENV === 'production',
+    secure: process.env.NODE_ENV === 'production' ? true : false, // false for dev
     httpOnly: true,
     sameSite: 'lax',
     maxAge: 24 * 60 * 60 * 1000
@@ -31,7 +31,7 @@ app.use(session({
 }));
 
 app.use(cors({
-  origin: [process.env.FRONTEND_URL, "http://localhost:5173"],
+  origin: [process.env.FRONTEND_URL, "http://localhost:5173", "https://restaurant-reservation-using-mern-stack-5d6x.onrender.com"],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']

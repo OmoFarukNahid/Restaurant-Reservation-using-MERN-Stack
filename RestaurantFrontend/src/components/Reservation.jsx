@@ -40,7 +40,7 @@ const Reservation = () => {
     
     try {
       const { data } = await axios.post(
-        '/api/v1/reservation/send',
+        'https://restaurant-reservation-using-mern-stack-5d6x.onrender.com/api/v1/reservation/send',
         formData,
         {
           headers: {

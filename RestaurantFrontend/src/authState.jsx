@@ -15,7 +15,7 @@ export function AuthProvider({ children }) {
     const checkAuth = async () => {
       try {
         const { data } = await axios.get(
-          'http://localhost:4000/api/v1/auth/check',
+          'https://restaurant-reservation-using-mern-stack-5d6x.onrender.com/api/v1/auth/check',
           { withCredentials: true }
         );
         if (data?.user) {
@@ -31,7 +31,7 @@ export function AuthProvider({ children }) {
   const register = async (name, email, password) => {
     try {
       const { data } = await axios.post(
-        'http://localhost:4000/api/v1/auth/register',
+        'https://restaurant-reservation-using-mern-stack-5d6x.onrender.com/api/v1/auth/register',
         { name, email, password },
         { withCredentials: true }
       );
@@ -46,7 +46,7 @@ export function AuthProvider({ children }) {
   const login = async (email, password) => {
     try {
       const { data } = await axios.post(
-        'http://localhost:4000/api/v1/auth/login',
+        'https://restaurant-reservation-using-mern-stack-5d6x.onrender.com/api/v1/auth/login',
         { email, password },
         { withCredentials: true }
       );
@@ -61,7 +61,7 @@ export function AuthProvider({ children }) {
   const logout = async () => {
     try {
       await axios.post(
-        'http://localhost:4000/api/v1/auth/logout',
+        'https://restaurant-reservation-using-mern-stack-5d6x.onrender.com/api/v1/auth/logout',
         {},
         { withCredentials: true }
       );

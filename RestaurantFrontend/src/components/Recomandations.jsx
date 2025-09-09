@@ -24,7 +24,7 @@ const Recommendations = () => {
   const fetchRecommendations = async () => {
     try {
       const { data } = await axios.get(
-        'http://localhost:4000/api/v1/recommendations',
+        'https://restaurant-reservation-using-mern-stack-5d6x.onrender.com/api/v1/recommendations',
         { withCredentials: true }
       );
       setRecommendations(data.recommendations);
@@ -52,14 +52,14 @@ const Recommendations = () => {
     try {
       if (editingId) {
         await axios.put(
-          `http://localhost:4000/api/v1/recommendations/${editingId}`,
+          `https://restaurant-reservation-using-mern-stack-5d6x.onrender.com/api/v1/recommendations/${editingId}`,
           { title, description, image },
           { withCredentials: true }
         );
         toast.success('Recommendation updated successfully');
       } else {
         await axios.post(
-          'http://localhost:4000/api/v1/recommendations',
+          'https://restaurant-reservation-using-mern-stack-5d6x.onrender.com/api/v1/recommendations',
           { title, description, image },
           { withCredentials: true }
         );
@@ -89,7 +89,7 @@ const Recommendations = () => {
     if (window.confirm('Are you sure you want to delete this recommendation?')) {
       try {
         await axios.delete(
-          `http://localhost:4000/api/v1/recommendations/${id}`,
+          `https://restaurant-reservation-using-mern-stack-5d6x.onrender.com/api/v1/recommendations/${id}`,
           { withCredentials: true }
         );
         toast.success('Recommendation deleted successfully');
